@@ -3,51 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的第一个网页</title>
+    <title>我的商品店铺</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1 {
-            color: #333;
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* 顶部标题 */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
             text-align: center;
         }
-        .card {
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* 商品容器 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* 商品网格 */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* 单个商品卡片 */
+        .product-card {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            font-size: 16px;
         }
-        button:hover {
-            background-color: #45a049;
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: #e9ecef;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-brief {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            font-size: 2em;
+            color: #999;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-price {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .modal-description {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .buy-btn:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>欢迎来到我的网页！</h1>
-        <p>这是我的第一个网页，使用 HTML、CSS 和 JavaScript 制作。</p>
-        <button onclick="sayHello()">点击我</button>
-        <p id="message"></p>
+    <header>
+        <h1>我的精品店铺</h1>
+        <p>发现心仪好物</p>
+    </header>
+
+    <div class="container">
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- 商品详情弹窗 -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>商品详情</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
     </div>
 
     <script>
-        function sayHello() {
-            document.getElementById('message').textContent = '你好！你成功点击了按钮！🎉';
+        // 商品数据（你可以在这里修改商品信息）
+        const products = [
+            {
+                id: 1,
+                name: "时尚T恤",
+                price: "¥199",
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500",
+                brief: "纯棉材质，舒适透气",
+                description: "这款T恤采用100%纯棉材质，手感柔软，透气性极佳。简约的设计适合各种场合穿着，是衣橱必备单品。多种颜色可选，尺码齐全。"
+            },
+            {
+                id: 2,
+                name: "运动鞋",
+                price: "¥399",
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+                brief: "轻便舒适，专业运动",
+                description: "专业运动鞋，采用高科技缓震材料，有效减轻运动时的冲击力。鞋底防滑耐磨，适合跑步、健身等多种运动场景。透气网面设计，长时间穿着也不闷脚。"
+            },
+            {
+                id: 3,
+                name: "双肩背包",
+                price: "¥299",
+                image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500",
+                brief: "大容量，时尚实用",
+                description: "多功能双肩包，内部分层设计合理，可放置15.6英寸笔记本电脑。防泼水材质，适合日常通勤和短途旅行。人体工学背负系统，减轻肩部压力。"
+            },
+            {
+                id: 4,
+                name: "无线耳机",
+                price: "¥599",
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+                brief: "降噪音质，超长续航",
+                description: "主动降噪技术，隔绝环境噪音，让你沉浸在音乐世界。蓝牙5.0连接稳定，单次充电可使用8小时。人体工学设计，佩戴舒适，适合长时间使用。"
+            },
+            {
+                id: 5,
+                name: "智能手表",
+                price: "¥899",
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
+                brief: "健康监测，智能提醒",
+                description: "多功能智能手表，支持心率监测、睡眠追踪、运动记录等功能。防水防尘，适合游泳等水上运动。超长续航，充电一次可使用7天。"
+            },
+            {
+                id: 6,
+                name: "保温杯",
+                price: "¥159",
+                image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500",
+                brief: "24小时保温，安全材质",
+                description: "双层真空不锈钢材质，保温保冷效果极佳。食品级材料，安全无异味。防漏设计，可以放心放入包中携带。容量500ml，适合日常使用。"
+            }
+        ];
+
+        // 显示商品列表
+        function displayProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card" onclick="showProductDetail(${product.id})">
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price}</div>
+                        <div class="product-brief">${product.brief}</div>
+                    </div>
+                </div>
+            `).join('');
         }
+
+        // 显示商品详情
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="modal-image">
+                <h2 class="modal-title">${product.name}</h2>
+                <div class="modal-price">${product.price}</div>
+                <div class="modal-description">${product.description}</div>
+                <button class="buy-btn" onclick="buyProduct('${product.name}')">立即购买</button>
+            `;
+            
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        // 购买功能（你可以修改这个函数）
+        function buyProduct(productName) {
+            alert('感谢购买 ' + productName + '！\n请联系店主完成订单。');
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('productModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 页面加载时显示商品
+        displayProducts();
     </script>
 </body>
 </html>
